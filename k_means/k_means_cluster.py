@@ -1,6 +1,6 @@
-#!/usr/bin/python 
+#!/usr/bin/python
 
-""" 
+"""
     Skeleton code for k-means clustering mini-project.
 """
 
@@ -40,14 +40,64 @@ def Draw(pred, features, poi, mark_poi=False, name="image.png", f1_name="feature
 
 ### load in the dict of dicts containing all the data on each person in the dataset
 data_dict = pickle.load( open("../final_project/final_project_dataset.pkl", "r") )
-### there's an outlier--remove it! 
+### there's an outlier--remove it!
 data_dict.pop("TOTAL", 0)
 
+# Find exercised_stock_options
+import operator
+stock = {k: v['exercised_stock_options'] for k, v in data_dict.items() if v['exercised_stock_options'] != 'NaN'}
 
-### the input features we want to use 
-### can be any key in the person-level dictionary (salary, director_fees, etc.) 
+# Maximum exercised_stock_options
+maxval = max(stock.iteritems(), key=operator.itemgetter(1))[1]
+max_stock = {k: v for k,v in stock.items() if v==maxval}
+max_stock
+
+# Minimum exercised_stock_options
+minval = min(stock.iteritems(), key=operator.itemgetter(1))[1]
+min_stock = {k: v for k,v in stock.items() if v==minval}
+min_stock
+
+# Stocks
+ex_stok = []
+for users in data_dict:
+    val = data_dict[users]["exercised_stock_options"]
+    if val == 'NaN':
+        continue
+    ex_stok.append(val)
+print "Max exercised stock options: ", max(ex_stok)
+print "Max exercised stock options: ", min(ex_stok)
+
+
+# Find salary
+salary = {k: v['salary'] for k, v in data_dict.items() if v['salary'] != 'NaN'}
+# Maximum salary
+maxval = max(salary.iteritems(), key=operator.itemgetter(1))[1]
+max_salary = {k: v for k,v in salary.items() if v==maxval}
+max_salary
+
+# Minimum salary
+minval = min(salary.iteritems(), key=operator.itemgetter(1))[1]
+min_salary = {k: v for k,v in salary.items() if v==minval}
+min_salary
+
+# Salary
+salary = []
+for users in data_dict:
+    val = data_dict[users]["salary"]
+    if val == 'NaN':
+        continue
+    salary.append(val)
+
+print "Max salary: ", max(salary)
+print "Min salary: ", min(salary)
+
+
+
+### the input features we want to use
+### can be any key in the person-level dictionary (salary, director_fees, etc.)
 feature_1 = "salary"
 feature_2 = "exercised_stock_options"
+# feature_3 = "total_payments"
 poi  = "poi"
 features_list = [poi, feature_1, feature_2]
 data = featureFormat(data_dict, features_list )
@@ -55,7 +105,7 @@ poi, finance_features = targetFeatureSplit( data )
 
 
 ### in the "clustering with 3 features" part of the mini-project,
-### you'll want to change this line to 
+### you'll want to change this line to
 ### for f1, f2, _ in finance_features:
 ### (as it's currently written, the line below assumes 2 features)
 for f1, f2 in finance_features:
@@ -64,9 +114,9 @@ plt.show()
 
 ### cluster here; create predictions of the cluster labels
 ### for the data and store them to a list called pred
-
-
-
+from sklearn.cluster import KMeans
+clf = KMeans(n_clusters=2)
+pred = clf.fit_predict(finance_features)
 
 ### rename the "name" parameter when you change the number of features
 ### so that the figure gets saved to a different file

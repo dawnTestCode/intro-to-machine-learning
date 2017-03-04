@@ -24,18 +24,32 @@ plt.scatter(grade_slow, bumpy_slow, color = "r", label="slow")
 plt.legend()
 plt.xlabel("bumpiness")
 plt.ylabel("grade")
-plt.show()
+#plt.show()
 ################################################################################
 
 
-### your code here!  name your classifier object clf if you want the 
+### your code here!  name your classifier object clf if you want the
 ### visualization code (prettyPicture) to show you the decision boundary
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 
 
+#c=1
+#clf = SVC(C=c)
+#print "C=", c
 
+est = 150
+print "Num estimators: ", est
+#clf = KNeighborsClassifier(n_neighbors=1)
+clf = RandomForestClassifier(n_estimators=est)
+#clf = AdaBoostClassifier(n_estimators=est)
+clf = clf.fit(features_train, labels_train)
 
-
-
+pred = clf.predict(features_test)
+print "Accuracy: ", accuracy_score(labels_test, pred)
 
 
 try:
